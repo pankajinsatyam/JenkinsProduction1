@@ -38,7 +38,7 @@ jobs:
           path: checkov-dockerfile-report.json
           if-no-files-found: warn
  
-   docker:
+  docker:
     name: Docker Build & Push
     needs:
       - checkov-dockerfile
