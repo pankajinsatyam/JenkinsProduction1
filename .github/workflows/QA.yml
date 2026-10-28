@@ -57,7 +57,7 @@ jobs:
       - name: Push
         env:
           DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
-          DOCKERHUB_PWD: ${{ secrets.DOCKERHUB_PWD }}
+          DOCKERHUB_PWD: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
           echo "$DOCKERHUB_PWD" | docker login -u "$DOCKERHUB_USER" --password-stdin
           docker push "$IMAGE:$TAG"
