@@ -5,7 +5,7 @@ on:
     branches:
       - qa
     paths:
-      - python/**
+      - Day 07/python/**
       - .github/workflows/QA.yml
 permissions:
   contents: write
