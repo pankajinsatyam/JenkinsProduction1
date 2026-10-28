@@ -15,7 +15,6 @@ jobs:
   checkov-dockerfile:
     name: Checkov Dockerfile Scan
     runs-on: ubuntu-latest
-    needs: gitleaks-scan
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
