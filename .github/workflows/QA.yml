@@ -10,7 +10,8 @@ on:
 permissions:
   contents: write
   id-token: write
-  
+
+jobs:
   checkov-dockerfile:
     name: Checkov Dockerfile Scan
     runs-on: ubuntu-latest
