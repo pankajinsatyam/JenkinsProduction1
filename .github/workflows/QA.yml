@@ -10,7 +10,9 @@ on:
 permissions:
   contents: write
   id-token: write
-
+env:                                   # <- no spaces before "env"
+  IMAGE: docker.io/pankajinoracle/secondrepo
+  TAG: ${{ github.run_number }}
 jobs:
   checkov-dockerfile:
     name: Checkov Dockerfile Scan
