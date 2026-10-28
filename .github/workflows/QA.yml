@@ -35,3 +35,33 @@ jobs:
           name: checkov-dockerfile-report
           path: checkov-dockerfile-report.json
           if-no-files-found: warn
+ 
+  build-push-deploy:
+    # Jenkins "agent any".
+    # Use "self-hosted" if you want the container to keep running after the job ends.
+    runs-on: ubuntu-latest
+ 
+    steps:
+      # Jenkins checks out code automatically; GitHub Actions needs this step
+      - name: Checkout code
+        uses: actions/checkout@v4
+ 
+      # ---------- stage: build ----------
+      - name: Build
+        run: docker build -t "$IMAGE:$TAG" -t "$IMAGE:latest" .
+ 
+      # ---------- stage: push ----------
+      # Jenkins withCredentials(...) -> GitHub repository secrets
+      - name: Push
+        env:
+          DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
+          DOCKERHUB_PWD: ${{ secrets.DOCKERHUB_PWD }}
+        run: |
+          echo "$DOCKERHUB_PWD" | docker login -u "$DOCKERHUB_USER" --password-stdin
+          docker push "$IMAGE:$TAG"
+          docker push "$IMAGE:latest"
+ 
+
+
+
+
