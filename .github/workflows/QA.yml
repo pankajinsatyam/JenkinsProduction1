@@ -3,7 +3,7 @@ name: Enterprise DevSecOps CICD Pipeline for Python
 on:
   push:
     branches:
-      - qa
+      - QA
     paths:
       - Day 07/python/**
       - .github/workflows/QA.yml
