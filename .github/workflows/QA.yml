@@ -13,6 +13,8 @@ permissions:
 env:                                   # <- no spaces before "env"
   IMAGE: docker.io/pankajinoracle/secondrepo
   TAG: ${{ github.run_number }}
+  AWS_REGION: us-east-1
+  EKS_CLUSTER: pank-cluster
 jobs:
   checkov-dockerfile:
     name: Checkov Dockerfile Scan
@@ -77,8 +79,29 @@ jobs:
             pankajinoracle/secondrepo:${{ github.sha }}
             pankajinoracle/secondrepo:latest
 
- 
+  deploy:
+    name: Deploy to EKS
+    needs:
+      - docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::<account-id>:role/github-actions-eks
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name $EKS_CLUSTER --region $AWS_REGION
+
+      - name: Deploy
+        run: |
+          kubectl apply -f "Day 07/python/k8s/deployment.yaml" -n qa
+          kubectl set image deployment/myapp myapp=${{ env.IMAGE }}:${{ github.sha }} -n qa
+          kubectl rollout status deployment/myapp -n qa --timeout=120s
 
 
 
