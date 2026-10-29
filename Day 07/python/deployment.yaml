@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+  namespace: qa
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      # imagePullSecrets:          # uncomment if Docker Hub repo is private
+      #   - name: dockerhub-secret
+      containers:
+        - name: myapp
+          image: docker.io/pankajinoracle/secondrepo:latest
+          ports:
+            - containerPort: 5000
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp
+  namespace: qa
+spec:
+  type: LoadBalancer
+  selector:
+    app: myapp
+  ports:
+    - port: 80
+      targetPort: 5000
